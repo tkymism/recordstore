@@ -24,7 +24,7 @@ public class TableMetaTest {
 				.column("profile").type(ColumnMeta.STRING)
 				.column("profile2").type(ColumnMeta.STRING)
 				.meta();
-		assertThat(meta.columns().length, is(2));
+		assertThat(meta.properties().length, is(2));
 		assertThat(meta.keys().length, is(2));
 		assertThat(meta.keyNames()[0], is("id"));
 		assertThat(meta.keyNames()[1], is("email"));

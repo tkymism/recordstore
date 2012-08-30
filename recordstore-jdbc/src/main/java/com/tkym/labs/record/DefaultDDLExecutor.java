@@ -20,6 +20,8 @@ class DefaultDDLExecutor implements DDLExecutor{
 	@Override
 	public void create(TableMeta tableMeta) throws SQLException{
 		execute(dialect.createCreateStatement(tableMeta));
+		for (String stmt : dialect.createCreateIndexStatements(tableMeta))
+			execute(stmt);
 	}
 	
 	@Override

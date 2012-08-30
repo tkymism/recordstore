@@ -57,7 +57,7 @@ class SqliteDialect extends AbstractDatastoreDialect{
 		List<ColumnMeta<?>> columnList = new ArrayList<ColumnMeta<?>>();
 		for(ColumnMeta<?> meta : p.keys()) 
 			columnList.add(meta);
-		for(ColumnMeta<?> meta : p.columns()) 
+		for(ColumnMeta<?> meta : p.properties()) 
 			columnList.add(meta);
 		
 		for(ColumnMeta<?> column : columnList){

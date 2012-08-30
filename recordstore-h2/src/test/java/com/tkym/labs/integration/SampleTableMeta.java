@@ -37,9 +37,9 @@ class SampleTableMeta {
 				.table("account")
 				.key(PERSON_ID).asLong()
 				.key(EMAIL).asString()
-				.column("profile1").asString()
-				.column("profile2").asString()
-				.column("profile3").asString()
+				.column("profile1").asString(100)
+				.column("profile2").asString(100)
+				.column("profile3").asString(100)
 				.meta();
 	static Record account(long userId, String email, String profile1, String profile2, String profile3){
 		Record record = new Record(new RecordKey(ACCOUNT, userId, email));

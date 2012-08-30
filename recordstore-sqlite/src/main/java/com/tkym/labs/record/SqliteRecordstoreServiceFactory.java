@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 import com.tkym.labs.record.RecordstoreServiceImpl;
 
-
 public class SqliteRecordstoreServiceFactory implements RecordstoreServiceFactory {
 	private static final String JDBC_CLASS = "org.sqlite.JDBC"; 
 	private final URL url;

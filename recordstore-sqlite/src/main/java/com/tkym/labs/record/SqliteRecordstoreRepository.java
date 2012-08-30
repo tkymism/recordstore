@@ -6,10 +6,11 @@ public class SqliteRecordstoreRepository {
 	public static SqliteRecordstoreServiceFactory asReal(URL url){
 		return new SqliteRecordstoreServiceFactory(url);
 	}
-	public static SqliteRecordstoreServiceFactory asMemory(){
+	public static SqliteRecordstoreServiceFactory inMemory(){
 		return new SqliteRecordstoreServiceFactory();
 	}
-	public static TableMeta MASTER = 
+	public static 
+		TableMeta MASTER = 
 			TableMeta.table("sqlite_master").
 			column("name").asString().
 			column("tbl_name").asString().

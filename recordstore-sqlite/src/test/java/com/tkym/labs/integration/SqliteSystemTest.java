@@ -10,7 +10,6 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -24,7 +23,7 @@ public class SqliteSystemTest {
 	private static RecordstoreService service;
 	@BeforeClass
 	public static void setupClass() throws RecordstoreException{
-		service = SqliteRecordstoreRepository.asMemory().create();
+		service = SqliteRecordstoreRepository.inMemory().create();
 	}
 	@AfterClass
 	public static void teardownClass() throws RecordstoreException{
@@ -44,10 +43,10 @@ public class SqliteSystemTest {
 					record.get("rootpage")+":"+
 					record.get("sql")
 					);
-		assertThat(list.size(), is(3));
-		Assert.assertThat(list.get(0).get("tbl_name",String.class), is(PERSON.tableName())); 
-		Assert.assertThat(list.get(1).get("tbl_name",String.class), is(ACCOUNT.tableName())); 
-		Assert.assertThat(list.get(2).get("tbl_name",String.class), is(PAYMENT.tableName())); 
+		assertThat(list.size(), is(5));
+		assertThat(list.get(0).get("tbl_name",String.class), is(PERSON.tableName())); 
+		assertThat(list.get(3).get("tbl_name",String.class), is(ACCOUNT.tableName())); 
+		assertThat(list.get(4).get("tbl_name",String.class), is(PAYMENT.tableName())); 
 		service.drop(PERSON, true);
 		service.drop(ACCOUNT, true);
 		service.drop(PAYMENT, true);

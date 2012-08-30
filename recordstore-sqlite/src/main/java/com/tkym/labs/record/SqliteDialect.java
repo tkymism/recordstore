@@ -1,16 +1,12 @@
 package com.tkym.labs.record;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.tkym.labs.record.RecordstoreDialect.AbstractDatastoreDialect;
-
 import com.tkym.labs.record.TableMeta.ColumnMeta;
 import com.tkym.labs.record.TableMeta.ColumnMetaType;
+import com.tkym.labs.record.TableMeta.IndexMeta;
 
 
 /**
@@ -42,39 +38,51 @@ class SqliteDialect extends AbstractDatastoreDialect{
 	}
 	
 	@Override
-	public String createCreateStatement(TableMeta p){
+	public String[] createCreateIndexStatements(TableMeta meta) {
+		String[] ret = new String[meta.indexes().length];
+		for (int i=0; i<ret.length; i++)
+			ret[i] = makeCreateIndexStatement(meta.tableName(), meta.indexes()[i]);
+		return ret;
+	}
+	
+	private String makeCreateIndexStatement(String tablename, IndexMeta index){
+		StringBuilder sb = new StringBuilder();
+		sb.append("create ");
+		if (index.isUnique())
+			sb.append("unique ");
+		sb.append("index ");
+		sb.append(index.getName()+" ");
+		sb.append("on ");
+		sb.append(tablename+" ");
+		sb.append("(");
+		boolean first = true;
+		for (ColumnMeta<?> col : index.columns()){
+			if (first) first = false;
+			else sb.append(", ");
+			sb.append(col.getName());
+		}
+		sb.append(")");
+		return sb.toString();
+	}
+	
+	@Override
+	public String createCreateStatement(TableMeta tableMeta){
 		StringBuilder sb = new StringBuilder();
 		sb.append("create table ");
-		sb.append(p.tableName());
+		sb.append(tableMeta.tableName());
 		sb.append(" (");
 		boolean first = true;
-		
-		// 
-		Set<String> keySet = new HashSet<String>();
-		for(ColumnMeta<?> meta : p.keys()) keySet.add(meta.getName());
-		
-		// add all key and all column; 
-		List<ColumnMeta<?>> columnList = new ArrayList<ColumnMeta<?>>();
-		for(ColumnMeta<?> meta : p.keys()) 
-			columnList.add(meta);
-		for(ColumnMeta<?> meta : p.columns()) 
-			columnList.add(meta);
-		
-		for(ColumnMeta<?> column : columnList){
+		for(ColumnMeta<?> column : tableMeta.properties()){
 			if(first) first = false;
 			else sb.append(", ");
-			
 			sb.append(column.getName());
-			
 			if(column.getType() != null)
 				if(typeMap.containsKey(column.getType()))
 					sb.append(" "+typeMap.get(column.getType()).toString());
-			
-			if(keySet.contains(column.getName()))
+			if(tableMeta.isKey(column))
 				sb.append(" primarykey");
 		}
 		sb.append(")");
-		
 		return sb.toString();
 	}
 }

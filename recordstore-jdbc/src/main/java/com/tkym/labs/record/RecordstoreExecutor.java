@@ -44,7 +44,7 @@ public class RecordstoreExecutor {
 		PreparedStatement ps = provider.get(meta, PreparedStatementType.INSERT);
 		PreparedStatementBinder binder = helper.create(ps);
 		bindValuesFromMapAndColumnMeta(binder, meta.keys(), key.asMap());
-		bindValuesFromMapAndColumnMeta(binder, meta.columns(), record.asMap());
+		bindValuesFromMapAndColumnMeta(binder, meta.properties(), record.asMap());
 		try {
 			return ps.executeUpdate();
 		} catch (SQLException e) {
@@ -62,7 +62,7 @@ public class RecordstoreExecutor {
 		TableMeta meta = record.key().getTableMeta();
 		PreparedStatement ps = provider.get(meta, PreparedStatementType.UPDATE);
 		PreparedStatementBinder binder = helper.create(ps);
-		bindValuesFromMapAndColumnMeta(binder, meta.columns(), record.asMap());
+		bindValuesFromMapAndColumnMeta(binder, meta.properties(), record.asMap());
 		bindValuesFromMapAndColumnMeta(binder, meta.keys(), key.asMap());
 		return ps.executeUpdate();
 	}

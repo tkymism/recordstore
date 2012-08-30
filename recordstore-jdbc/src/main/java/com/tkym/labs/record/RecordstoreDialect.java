@@ -10,6 +10,7 @@ import com.tkym.labs.record.RecordstoreBindHelper.ResultSetBinder;
 interface RecordstoreDialect {
 	String createCreateStatement(TableMeta meta);
 	String createDropStatement(TableMeta meta);
+	String[] createCreateIndexStatements(TableMeta meta);
 	ResultSetBinder createResultSetBinder(ResultSet resultSet, String[] columnsArray);
 	PreparedStatementBinder createPreparedStatementBinder(PreparedStatement preparedStatement);
 	abstract class AbstractDatastoreDialect implements RecordstoreDialect {
@@ -19,6 +20,10 @@ interface RecordstoreDialect {
 			sb.append("drop table ");
 			sb.append(p.tableName());
 			return sb.toString();
+		}
+		@Override
+		public String[] createCreateIndexStatements(TableMeta meta){
+			return new String[0];
 		}
 		@Override
 		public ResultSetBinder createResultSetBinder(ResultSet resultSet, String[] columnsArray){

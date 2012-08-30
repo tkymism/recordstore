@@ -12,9 +12,7 @@ import static org.junit.Assert.assertThat;
 import java.util.Iterator;
 import java.util.List;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -31,8 +29,8 @@ public class SqliteIntegrationTest {
 
 	@BeforeClass
 	public static void setupClass() throws RecordstoreException {
-		source = SqliteRecordstoreRepository.asMemory().create();
-		target = SqliteRecordstoreRepository.asMemory().create();
+		source = SqliteRecordstoreRepository.inMemory().create();
+		target = SqliteRecordstoreRepository.inMemory().create();
 		source.create(PERSON, true);
 		source.create(ACCOUNT, true);
 		source.create(PAYMENT, true);
@@ -68,7 +66,7 @@ public class SqliteIntegrationTest {
 				key("ACCOUNT_ID").asInteger().column("EMAIL").asString(). // PrimaryKey
 				column("ACCONT_TYPE").asInteger().meta(); // meta()
 	}
-
+	
 	@Test
 	public void testReplicationCase001() throws RecordstoreException {
 		source.put(user(101));
@@ -91,8 +89,11 @@ public class SqliteIntegrationTest {
 		Record user101 = ite.next();
 		target.put(user101);
 
-		Iterator<Record> iteAccount = source.query(ACCOUNT).filter(PERSON_ID)
-				.equalsTo(user101.key().value(PERSON_ID)).record().asIterator();
+		Iterator<Record> iteAccount = 
+				source.
+				query(ACCOUNT).
+				filter(PERSON_ID).equalsTo(user101.key().value(PERSON_ID)).
+				record().asIterator();
 		while (iteAccount.hasNext())
 			target.put(iteAccount.next());
 
@@ -190,40 +191,34 @@ public class SqliteIntegrationTest {
 			if (!sourceKeyList.contains(toKey))
 				target.deleteIfExists(toKey);
 		}
-
-		// put
 		Iterator<Record> iteAccount = source.query(ACCOUNT).filter(PERSON_ID)
 				.equalsTo(user101.key().value(PERSON_ID)).record().asIterator();
 		while (iteAccount.hasNext())
 			target.put(iteAccount.next());
-
 		Iterator<Record> itePayment = source.query(PAYMENT).filter(PERSON_ID)
 				.equalsTo(user101.key().value(PERSON_ID)).record().asIterator();
 		while (itePayment.hasNext())
 			target.put(itePayment.next());
 		target.getTransaction().commit();
-
 		List<Record> users = target.query(PERSON).sort(PERSON_ID).asc()
 				.record().asList();
 		List<Record> accounts = target.query(ACCOUNT).sort(PERSON_ID).asc()
 				.sort(EMAIL).asc().record().asList();
 		List<Record> payments = target.query(PAYMENT).sort(PERSON_ID).asc()
 				.sort(EMAIL).asc().sort(PAY_NO).asc().record().asList();
-
 		assertThat(users.size(), is(1));
 		assertThat(accounts.size(), is(2));
 		assertThat(payments.size(), is(5));
-		Assert.assertThat(payments.get(0).key().value(PAY_NO, short.class),
-				CoreMatchers.is((short) 1));
-		Assert.assertThat(payments.get(1).key().value(PAY_NO, short.class),
-				CoreMatchers.is((short) 2));
-		Assert.assertThat(payments.get(2).key().value(PAY_NO, short.class),
-				CoreMatchers.is((short) 3));
-		Assert.assertThat(payments.get(3).key().value(PAY_NO, short.class),
-				CoreMatchers.is((short) 11));
-		Assert.assertThat(payments.get(4).key().value(PAY_NO, short.class),
-				CoreMatchers.is((short) 12));
-
+		assertThat(payments.get(0).key().value(PAY_NO, short.class),
+				is((short) 1));
+		assertThat(payments.get(1).key().value(PAY_NO, short.class),
+				is((short) 2));
+		assertThat(payments.get(2).key().value(PAY_NO, short.class),
+				is((short) 3));
+		assertThat(payments.get(3).key().value(PAY_NO, short.class),
+				is((short) 11));
+		assertThat(payments.get(4).key().value(PAY_NO, short.class),
+				is((short) 12));
 		for (Record record : users) {
 			target.deleteIfExists(record.key());
 			source.deleteIfExists(record.key());
@@ -236,7 +231,6 @@ public class SqliteIntegrationTest {
 			target.deleteIfExists(record.key());
 			source.deleteIfExists(record.key());
 		}
-
 		assertThat(target.query(PERSON).record().asList().size(), is(0));
 		assertThat(target.query(ACCOUNT).record().asList().size(), is(0));
 		assertThat(target.query(PAYMENT).record().asList().size(), is(0));

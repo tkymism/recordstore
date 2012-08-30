@@ -19,7 +19,7 @@ abstract class AbstractRecordFetcher implements RecordFetcher{
 	
 	public Record getRecord() throws RecordstoreException{
 		Record record = new Record(getKey());
-		ColumnMeta<?>[] valuesMeta = tableMeta.columns();
+		ColumnMeta<?>[] valuesMeta = tableMeta.properties();
 		for(ColumnMeta<?> m : valuesMeta)
 			record.put(m.getName(), getValue(m.getName(), m.getType()));
 		return record;
