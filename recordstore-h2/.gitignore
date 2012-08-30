@@ -2,3 +2,7 @@
 /target
 /.classpath
 /.project
+/:memory:.h2.db
+/:memory:.trace.db
+/db.h2.db
+/db.trace.db
