@@ -72,7 +72,7 @@ class SqliteDialect extends AbstractDatastoreDialect{
 		sb.append(tableMeta.tableName());
 		sb.append(" (");
 		boolean first = true;
-		for(ColumnMeta<?> column : tableMeta.properties()){
+		for(ColumnMeta<?> column : tableMeta.allColumn()){
 			if(first) first = false;
 			else sb.append(", ");
 			sb.append(column.getName());
