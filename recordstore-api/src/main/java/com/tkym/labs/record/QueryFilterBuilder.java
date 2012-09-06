@@ -1,57 +1,45 @@
 package com.tkym.labs.record;
 
-import com.tkym.labs.record.QueryFilter.QueryFilterOperator;
 
 public class QueryFilterBuilder<T> {
-	private final String propertyName;
+	private final QueryFilterFactory<T> factory;
 	private final QueryBuilder parent;
+	QueryFilterBuilder(QueryBuilder parent, String propertyName, Class<T> type){
+		this.parent = parent;
+		this.factory = new QueryFilterFactory<T>(propertyName, type);
+	}
 	QueryFilterBuilder(QueryBuilder parent, String propertyName){
 		this.parent = parent;
-		this.propertyName = propertyName;
+		this.factory = new QueryFilterFactory<T>(propertyName);
 	}
-	
 	public QueryBuilder equalsTo(T value){
-		return filterValue(QueryFilterOperator.EQUAL, value);
+		return parent.filter(factory.equalsTo(value));
 	}
-	
 	public QueryBuilder notEquals(T value){
-		return filterValue(QueryFilterOperator.NOT_EQUAL, value);
+		return parent.filter(factory.notEquals(value));
 	}
-	
 	public QueryBuilder greaterThan(T value){
-		return filterValue(QueryFilterOperator.GREATER_THAN, value);
+		return parent.filter(factory.greaterThan(value));
 	}
-	
 	public QueryBuilder greaterEqual(T value){
-		return filterValue(QueryFilterOperator.GREATER_THAN_OR_EQUAL, value);
+		return parent.filter(factory.greaterEqual(value));
 	}
-	
 	public QueryBuilder lessThan(T value){
-		return filterValue(QueryFilterOperator.LESS_THAN, value);
+		return parent.filter(factory.lessThan(value));
 	}
-	
 	public QueryBuilder lessEqual(T value){
-		return filterValue(QueryFilterOperator.LESS_THAN_OR_EQUAL, value);
+		return parent.filter(factory.lessEqual(value));
 	}
-	
 	public QueryBuilder startsWith(T value){
-		return filterValue(QueryFilterOperator.START_WITH, value);
+		return parent.filter(factory.startsWith(value));
 	}
-	
 	public QueryBuilder endsWith(T value){
-		return filterValue(QueryFilterOperator.END_WITH, value);
+		return parent.filter(factory.endsWith(value));
 	}
-	
 	public QueryBuilder contains(T value){
-		return filterValue(QueryFilterOperator.CONTAIN, value);
+		return parent.filter(factory.contains(value));
 	}
-	
 	public QueryBuilder in(T... values){
-		return parent.filter(new QueryFilter<T>(propertyName, QueryFilterOperator.IN, values));
-	}
-	
-	@SuppressWarnings("unchecked")
-	private QueryBuilder filterValue(QueryFilterOperator operator, T value){
-		return parent.filter(new QueryFilter<T>(propertyName, operator, value));
+		return parent.filter(factory.in(values));
 	}
 }
