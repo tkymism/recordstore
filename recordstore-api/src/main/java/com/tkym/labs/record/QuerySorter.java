@@ -1,8 +1,8 @@
 package com.tkym.labs.record;
 
 
-class QuerySorter implements QuerySorterCriteria{
-	enum QuerySortDirection{
+public class QuerySorter implements QuerySorterCriteria{
+	public enum QuerySortDirection{
 		ASCENDING,
 		DESCENDING
 	}

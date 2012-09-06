@@ -17,7 +17,7 @@ class QuerySorterCriteriaInterpreter{
 	String statement(QuerySorterComposite composite){
 		StringBuilder sb = new StringBuilder();
 		boolean first = true;
-		for(QuerySorter sorter : composite.getSorters()){
+		for(QuerySorterCriteria sorter : composite.getSorters()){
 			if(first) first = false;
 			else sb.append(", ");
 			sb.append(statement(sorter));

@@ -1,3 +1,3 @@
 package com.tkym.labs.record;
 
-interface QuerySorterCriteria{}
+public interface QuerySorterCriteria{}

@@ -1,15 +1,18 @@
 package com.tkym.labs.record;
 
+import static com.tkym.labs.record.QuerySorter.QuerySortDirection.ASCENDING;
+import static com.tkym.labs.record.QuerySorter.QuerySortDirection.DESCENDING;
+
 import com.tkym.labs.record.QueryFilter.QueryFilterOperator;
 
-public class QueryFilterFactory<T> {
+public class QueryCriteriaBuilder<T> {
 	private final String property;
 	private final Class<T> type;
-	QueryFilterFactory(String property, Class<T> type){
+	QueryCriteriaBuilder(String property, Class<T> type){
 		this.property = property;
 		this.type = type;
 	}
-	QueryFilterFactory(String property){
+	QueryCriteriaBuilder(String property){
 		this(property, null);
 	}
 	public QueryFilter<T> equalsTo(T value){
@@ -51,5 +54,11 @@ public class QueryFilterFactory<T> {
 	}
 	public Class<T> getType() {
 		return type;
+	}
+	public QuerySorter desc(){
+		return new QuerySorter(property, DESCENDING);
+	}
+	public QuerySorter asc(){
+		return new QuerySorter(property, ASCENDING);
 	}
 }

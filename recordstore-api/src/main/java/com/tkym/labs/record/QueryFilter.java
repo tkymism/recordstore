@@ -2,8 +2,8 @@ package com.tkym.labs.record;
 
 import static com.tkym.labs.record.QueryFilter.QueryFilterOperator.IN;
 
-class QueryFilter<T> implements QueryFilterCriteria{
-	enum QueryFilterOperator {
+public class QueryFilter<T> implements QueryFilterCriteria{
+	public enum QueryFilterOperator {
 		EQUAL,
 		NOT_EQUAL,
 		LESS_THAN_OR_EQUAL,
@@ -33,16 +33,16 @@ class QueryFilter<T> implements QueryFilterCriteria{
 		if(operator != IN && values.length != 1)
 			throw new IllegalArgumentException("value's length is illegal: length="+values.length);
 	}
-	String getProperty() {
+	public String getProperty() {
 		return property;
 	}
-	QueryFilterOperator getOperator() {
+	public QueryFilterOperator getOperator() {
 		return operator;
 	}
-	T[] getValues() {
+	public T[] getValues() {
 		return values;
 	}
-	T getValue(){
+	public T getValue(){
 		return values[0];
 	}
 }

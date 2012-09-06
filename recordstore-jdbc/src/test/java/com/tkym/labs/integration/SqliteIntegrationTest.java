@@ -6,8 +6,8 @@ import static com.tkym.labs.integration.SampleTableMeta.PAYMENT;
 import static com.tkym.labs.integration.SampleTableMeta.PAY_NO;
 import static com.tkym.labs.integration.SampleTableMeta.PERSON;
 import static com.tkym.labs.integration.SampleTableMeta.PERSON_ID;
-import static com.tkym.labs.record.QueryFilterUtils.and;
-import static com.tkym.labs.record.QueryFilterUtils.property;
+import static com.tkym.labs.record.QueryUtils.and;
+import static com.tkym.labs.record.QueryUtils.property;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 

@@ -10,6 +10,6 @@ public interface QueryBuilder {
 	public <T> QueryFilterBuilder<T> filter(String columnName);
 	public QuerySortBuilder sort(String columnName);
 	public QueryBuilder filter(QueryFilterCriteria... filter);
-	public QueryBuilder sort(QuerySorter... sorter);
+	public QueryBuilder sort(QuerySorterCriteria... sorter);
 	public <T> QueryResult<T> read(QueryFetcher<T> fetcher) throws RecordstoreException;
 }

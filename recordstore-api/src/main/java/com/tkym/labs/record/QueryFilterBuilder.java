@@ -2,15 +2,15 @@ package com.tkym.labs.record;
 
 
 public class QueryFilterBuilder<T> {
-	private final QueryFilterFactory<T> factory;
+	private final QueryCriteriaBuilder<T> factory;
 	private final QueryBuilder parent;
 	QueryFilterBuilder(QueryBuilder parent, String propertyName, Class<T> type){
 		this.parent = parent;
-		this.factory = new QueryFilterFactory<T>(propertyName, type);
+		this.factory = new QueryCriteriaBuilder<T>(propertyName, type);
 	}
 	QueryFilterBuilder(QueryBuilder parent, String propertyName){
 		this.parent = parent;
-		this.factory = new QueryFilterFactory<T>(propertyName);
+		this.factory = new QueryCriteriaBuilder<T>(propertyName);
 	}
 	public QueryBuilder equalsTo(T value){
 		return parent.filter(factory.equalsTo(value));

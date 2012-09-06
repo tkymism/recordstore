@@ -10,7 +10,7 @@ import com.tkym.labs.record.QueryFilterComposite.QueryFilterCompositeType;
 
 abstract class AbstractQueryBuilder implements QueryBuilder {
 	private final List<QueryFilterCriteria> filters = new ArrayList<QueryFilterCriteria>();
-	private final List<QuerySorter> sorters = new ArrayList<QuerySorter>();
+	private final List<QuerySorterCriteria> sorters = new ArrayList<QuerySorterCriteria>();
 
 	public QueryResult<Record> record() throws RecordstoreException{
 		return read(QueryFetcher.RECORD);
@@ -75,7 +75,7 @@ abstract class AbstractQueryBuilder implements QueryBuilder {
 		return this;
 	}
 	
-	public QueryBuilder sort(QuerySorter... sorter){
+	public QueryBuilder sort(QuerySorterCriteria... sorter){
 		this.sorters.addAll(Arrays.asList(sorter));
 		return this;
 	}

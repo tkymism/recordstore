@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 
-class QueryFilterComposite implements QueryFilterCriteria{
-	enum QueryFilterCompositeType{
+public class QueryFilterComposite implements QueryFilterCriteria{
+	public enum QueryFilterCompositeType{
 		AND, OR
 	}
 	private final QueryFilterCompositeType type;

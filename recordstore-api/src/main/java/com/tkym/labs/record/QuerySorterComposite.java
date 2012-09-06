@@ -4,14 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 
 class QuerySorterComposite implements QuerySorterCriteria{
-	private final List<QuerySorter> sorters; 
-	QuerySorterComposite(List<QuerySorter> sorters){
+	private final List<QuerySorterCriteria> sorters; 
+	QuerySorterComposite(List<QuerySorterCriteria> sorters){
 		this.sorters = sorters;
 	}
-	QuerySorterComposite(QuerySorter... sorters){
+	QuerySorterComposite(QuerySorterCriteria... sorters){
 		this(Arrays.asList(sorters));
 	}
-	public List<QuerySorter> getSorters() {
+	public List<QuerySorterCriteria> getSorters() {
 		return sorters;
 	}
 }
