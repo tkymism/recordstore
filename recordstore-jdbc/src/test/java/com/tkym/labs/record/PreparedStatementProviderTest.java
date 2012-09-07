@@ -17,7 +17,6 @@ import org.junit.Test;
 import com.tkym.labs.record.DDLExecutor;
 import com.tkym.labs.record.PreparedStatementProvider;
 import com.tkym.labs.record.RecordstoreBindHelper;
-import com.tkym.labs.record.PreparedStatementProvider.PreparedStatementException;
 import com.tkym.labs.record.PreparedStatementProvider.PreparedStatementType;
 
 
@@ -46,7 +45,7 @@ public class PreparedStatementProviderTest {
 				.meta();
 	
 	@BeforeClass
-	public static void setupClass() throws SQLException, ClassNotFoundException{
+	public static void setupClass() throws SQLException, ClassNotFoundException, StatementExecuteException{
 		connection = new SqliteFactory().create(SqliteConnectionTest.class.getResource("test.db"));
 		DDLExecutor executor = SqliteFactory.ddl(connection);
 		try {
@@ -60,7 +59,7 @@ public class PreparedStatementProviderTest {
 	}
 	
 	@AfterClass
-	public static void teardownClass() throws SQLException, ClassNotFoundException{
+	public static void teardownClass() throws SQLException, ClassNotFoundException, StatementExecuteException{
 		DDLExecutor executor = SqliteFactory.ddl(connection);
 		executor.drop(user);
 		executor.drop(account);
@@ -68,7 +67,7 @@ public class PreparedStatementProviderTest {
 	}
 
 	@Test
-	public void testUserCase001() throws SQLException, PreparedStatementException{
+	public void testUserCase001() throws SQLException, StatementExecuteException{
 		PreparedStatement preparedStatement;
 		int ret;
 		RecordstoreBindHelper.PreparedStatementBinder helper;
@@ -99,7 +98,7 @@ public class PreparedStatementProviderTest {
 	}
 	
 	@Test
-	public void testAccountCase001() throws SQLException, PreparedStatementException{
+	public void testAccountCase001() throws SQLException, StatementExecuteException{
 		PreparedStatement preparedStatement;
 		int ret;
 		RecordstoreBindHelper.PreparedStatementBinder helper;
@@ -134,7 +133,7 @@ public class PreparedStatementProviderTest {
 	}
 
 	@Test
-	public void testUserCase002() throws SQLException, PreparedStatementException{
+	public void testUserCase002() throws SQLException, StatementExecuteException{
 		PreparedStatement preparedStatement;
 		int ret;
 		RecordstoreBindHelper.PreparedStatementBinder helper;

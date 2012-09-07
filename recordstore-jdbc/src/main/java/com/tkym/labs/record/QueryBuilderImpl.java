@@ -2,7 +2,6 @@ package com.tkym.labs.record;
 
 import java.sql.SQLException;
 
-import com.tkym.labs.record.PreparedStatementProvider.PreparedStatementException;
 
 public class QueryBuilderImpl extends AbstractQueryBuilder{
 	private final RecordstoreExecutor datastore;
@@ -21,7 +20,7 @@ public class QueryBuilderImpl extends AbstractQueryBuilder{
 					isKeyOnly);
 		} catch (SQLException e) {
 			throw new RecordstoreException(e);
-		} catch (PreparedStatementException e) {
+		} catch (StatementExecuteException e) {
 			throw new RecordstoreException(e);
 		}
 	}

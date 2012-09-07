@@ -72,7 +72,7 @@ public class SqliteIntegrationTest {
 				key("ACCOUNT_ID").asInteger().column("EMAIL").asString(). // PrimaryKey
 				column("ACCONT_TYPE").asInteger().meta(); // meta()
 	}
-
+	
 	@Test
 	public void testReplicationCase001() throws RecordstoreException {
 		source.put(user(101));

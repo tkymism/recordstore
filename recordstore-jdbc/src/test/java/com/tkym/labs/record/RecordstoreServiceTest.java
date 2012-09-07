@@ -24,7 +24,7 @@ public class RecordstoreServiceTest {
 	private static Connection connection;
 	
 	@BeforeClass
-	public static void setupClass() throws SQLException, ClassNotFoundException{
+	public static void setupClass() throws SQLException, ClassNotFoundException, StatementExecuteException{
 		connection = new SqliteFactory().create(SqliteConnectionTest.class.getResource("test.db"));
 		connection.setAutoCommit(false);
 		factory = new RecordstoreServiceFactory() {
@@ -49,7 +49,7 @@ public class RecordstoreServiceTest {
 	}
 	
 	@AfterClass
-	public static void teardownClass() throws SQLException, ClassNotFoundException{
+	public static void teardownClass() throws SQLException, ClassNotFoundException, StatementExecuteException{
 		DDLExecutor executor = SqliteFactory.ddl(connection);
 		executor.drop(userMeta);
 		executor.drop(accountMeta);

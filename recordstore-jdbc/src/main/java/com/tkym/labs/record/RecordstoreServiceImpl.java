@@ -86,6 +86,8 @@ class RecordstoreServiceImpl implements RecordstoreService{
 		} catch (SQLException e) {
 			if(throwException)
 				throw new RecordstoreException(e);
+		} catch (StatementExecuteException e) {
+			throw new RecordstoreException(e);
 		}
 	}
 	
@@ -95,7 +97,8 @@ class RecordstoreServiceImpl implements RecordstoreService{
 			if(beforeDrop) drop(meta, false);
 			executor.create(meta);
 		} catch (SQLException e) {
-			System.out.println(e.getSQLState());
+			throw new RecordstoreException(e);
+		} catch (StatementExecuteException e) {
 			throw new RecordstoreException(e);
 		}
 	}

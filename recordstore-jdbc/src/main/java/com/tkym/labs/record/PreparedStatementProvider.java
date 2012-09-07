@@ -2,9 +2,9 @@ package com.tkym.labs.record;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 /**
  * 
@@ -22,14 +22,13 @@ class PreparedStatementProvider{
 	}
 	
 	/**
-	 * 
 	 * @param meta
 	 * @param type
 	 * @param options
 	 * @return
-	 * @throws PreparedStatementException
+	 * @throws StatementExecuteException
 	 */
-	PreparedStatement get(TableMeta meta, PreparedStatementType type, String... options)  throws PreparedStatementException{
+	PreparedStatement get(TableMeta meta, PreparedStatementType type, String... options)  throws StatementExecuteException{
 		Map<String, PreparedStatement> map = getMap(meta);
 		String optionStr = optionString(options);
 		String key = generateKey(type, optionStr);
@@ -90,71 +89,5 @@ class PreparedStatementProvider{
 	 */
 	enum PreparedStatementType{
 		UPDATE, INSERT, DELETE, ENTITY, AS_KEY
-	}
-	
-	/**
-	 */
-	class PreparedStatementFactory{
-		private Connection connection;
-		private DMLStatementGenerator helper = new DefaultDmlStatementGenerator();
-		
-		PreparedStatementFactory(Connection connection){
-			this.connection = connection;
-		}
-		
-		/**
-		 * 
-		 * @param meta
-		 * @param type
-		 * @param option
-		 * @return
-		 * @throws SQLException
-		 */
-		PreparedStatement create(TableMeta meta, PreparedStatementType type, String option)  throws PreparedStatementException{
-			if(type.equals(PreparedStatementType.ENTITY)) return asEntity(meta, option);
-			if(type.equals(PreparedStatementType.AS_KEY)) return asKey(meta, option);
-			if(type.equals(PreparedStatementType.UPDATE)) return update(meta);
-			if(type.equals(PreparedStatementType.INSERT)) return insert(meta);
-			if(type.equals(PreparedStatementType.DELETE)) return delete(meta);
-			throw new IllegalArgumentException(
-					"illegalArgument meta is " + meta.toString() + 
-					"type is " + type.toString() +
-					"option is " + option);
-		}
-		
-		PreparedStatement update(TableMeta meta) throws PreparedStatementException{
-			return prepare(helper.update(meta));
-		}
-		
-		PreparedStatement insert(TableMeta meta) throws PreparedStatementException{
-			return prepare(helper.insert(meta));
-		}
-		
-		PreparedStatement delete(TableMeta meta) throws PreparedStatementException{
-			return prepare(helper.delete(meta));
-		}
-		
-		PreparedStatement asEntity(TableMeta meta, String option) throws PreparedStatementException{
-			return prepare(helper.asEntity(meta) + option);
-		}
-		
-		PreparedStatement asKey(TableMeta meta, String option) throws PreparedStatementException{
-			return prepare(helper.asKey(meta) + option);
-		}
-		
-		private PreparedStatement prepare(String sql) throws PreparedStatementException{
-			try {
-				return connection.prepareStatement(sql);
-			} catch (SQLException e) {
-				throw new PreparedStatementException(sql, e);
-			}
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	class PreparedStatementException extends Exception{
-		PreparedStatementException(String sql, SQLException e){
-			super("Illegal Preparedstatement SQL:["+sql+"]", e);
-		}
 	}
 }

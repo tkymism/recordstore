@@ -18,7 +18,6 @@ import org.junit.Test;
 import com.tkym.labs.record.DDLExecutor;
 import com.tkym.labs.record.RecordFetcherImpl;
 import com.tkym.labs.record.RecordstoreExecutor;
-import com.tkym.labs.record.PreparedStatementProvider.PreparedStatementException;
 
 
 public class RecordstoreExecutorTest {
@@ -78,7 +77,7 @@ public class RecordstoreExecutorTest {
 	}
 	
 	@BeforeClass
-	public static void setupClass() throws SQLException, ClassNotFoundException{
+	public static void setupClass() throws SQLException, ClassNotFoundException, StatementExecuteException{
 		connection = new SqliteFactory().create(SqliteConnectionTest.class.getResource("test.db"));
 		connection.setAutoCommit(false);
 		DDLExecutor executor = SqliteFactory.ddl(connection);
@@ -96,7 +95,7 @@ public class RecordstoreExecutorTest {
 	}
 	
 	@AfterClass
-	public static void teardownClass() throws SQLException, ClassNotFoundException{
+	public static void teardownClass() throws SQLException, ClassNotFoundException, StatementExecuteException{
 		DDLExecutor executor = SqliteFactory.ddl(connection);
 		executor.drop(userMeta);
 		executor.drop(accountMeta);
@@ -104,7 +103,7 @@ public class RecordstoreExecutorTest {
 	}
 	
 	@Test
-	public void testNormalTest() throws SQLException, PreparedStatementException{
+	public void testNormalTest() throws SQLException, StatementExecuteException{
 		RecordstoreExecutor executor = SqliteFactory.executor(connection);
 		
 		assertThat(executor.insert(user((long)0)), is(1));
@@ -124,7 +123,7 @@ public class RecordstoreExecutorTest {
 	}
 	
 	@Test
-	public void testQueryCase001() throws SQLException, RecordstoreException, PreparedStatementException{
+	public void testQueryCase001() throws SQLException, RecordstoreException, StatementExecuteException{
 		RecordstoreExecutor executor = SqliteFactory.executor(connection);
 		List<Record> records = new ArrayList<Record>();
 		for(long i=0; i<1000; i++) records.add(user(i));
@@ -141,7 +140,7 @@ public class RecordstoreExecutorTest {
 	}
 	
 	@Test
-	public void testQueryCase003() throws SQLException, RecordstoreException, PreparedStatementException{
+	public void testQueryCase003() throws SQLException, RecordstoreException, StatementExecuteException{
 		RecordstoreExecutor executor = SqliteFactory.executor(connection);
 		List<Record> records = new ArrayList<Record>();
 		for(long i=0; i<1000; i++) records.add(account(i/10, i+"@email.com"));
@@ -157,7 +156,7 @@ public class RecordstoreExecutorTest {
 	}
 	
 	@Test
-	public void testQueryBuilderCase_asList() throws RecordstoreException, SQLException, PreparedStatementException{
+	public void testQueryBuilderCase_asList() throws RecordstoreException, SQLException, StatementExecuteException{
 		RecordstoreExecutor executor = SqliteFactory.executor(connection);
 		List<Record> records = new ArrayList<Record>();
 		for(long i=0; i<1000; i++) records.add(user(i));

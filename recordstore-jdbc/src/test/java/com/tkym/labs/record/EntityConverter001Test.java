@@ -17,7 +17,6 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import com.tkym.labs.record.RecordstoreExecutor;
-import com.tkym.labs.record.PreparedStatementProvider.PreparedStatementException;
 
 
 public class EntityConverter001Test {
@@ -166,7 +165,7 @@ public class EntityConverter001Test {
 				executor.delete(converter.convertToPrimaryKeyFrom(key));
 			} catch (SQLException e) {
 				throw new RecordstoreException(e);
-			} catch (PreparedStatementException e) {
+			} catch (StatementExecuteException e) {
 				throw new RecordstoreException(e);
 			}
 		}

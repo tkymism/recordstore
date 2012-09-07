@@ -6,11 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-import com.tkym.labs.record.PreparedStatementProvider.PreparedStatementException;
 import com.tkym.labs.record.PreparedStatementProvider.PreparedStatementType;
-import com.tkym.labs.record.RecordstoreBindHelper.PreparedStatementBinder;
-
 import com.tkym.labs.record.QueryFilterCriteriaInterpreter.PsValue;
+import com.tkym.labs.record.RecordstoreBindHelper.PreparedStatementBinder;
 import com.tkym.labs.record.TableMeta.ColumnMeta;
 
 
@@ -25,60 +23,47 @@ public class RecordstoreExecutor {
 	private final PreparedStatementProvider provider;
 	private final RecordstoreDialect dialect;
 	private DDLExecutor ddlExecutor;
+	private StatementExecuteService executerService;
 	RecordstoreExecutor(Connection connection, RecordstoreDialect dialect) {
 		provider = new PreparedStatementProvider(connection);
-		ddlExecutor = new DefaultDDLExecutor(connection, dialect);
+		executerService = new StatementExecuteService(connection);
+		ddlExecutor = new DefaultDDLExecutor(executerService, dialect);
 		helper = new RecordstoreBindHelper(dialect);
 		this.dialect = dialect;
 	}
-	
-	/**
-	 * @param record
-	 *            Entity
-	 * @return
-	 * @throws SQLException
-	 */
-	public int insert(Record record) throws PreparedStatementException, SQLException{
+
+	public int insert(Record record) throws StatementExecuteException, SQLException{
 		RecordKey key = record.key();
 		TableMeta meta = record.key().getTableMeta();
 		PreparedStatement ps = provider.get(meta, PreparedStatementType.INSERT);
-		PreparedStatementBinder binder = helper.create(ps);
-		bindValuesFromMapAndColumnMeta(binder, meta.keys(), key.asMap());
-		bindValuesFromMapAndColumnMeta(binder, meta.properties(), record.asMap());
-		try {
-			return ps.executeUpdate();
-		} catch (SQLException e) {
-			throw e;
+		synchronized (ps) {
+			PreparedStatementBinder binder = helper.create(ps);
+			bindValuesFromMapAndColumnMeta(binder, meta.keys(), key.asMap());
+			bindValuesFromMapAndColumnMeta(binder, meta.properties(), record.asMap());
+			return executerService.executeUpdate(ps);
 		}
 	}
-
-	/**
-	 * @param record
-	 * @return
-	 * @throws SQLException
-	 */
-	public int update(Record record) throws PreparedStatementException, SQLException{
+	
+	public int update(Record record) throws StatementExecuteException, SQLException{
 		RecordKey key = record.key();
 		TableMeta meta = record.key().getTableMeta();
 		PreparedStatement ps = provider.get(meta, PreparedStatementType.UPDATE);
-		PreparedStatementBinder binder = helper.create(ps);
-		bindValuesFromMapAndColumnMeta(binder, meta.properties(), record.asMap());
-		bindValuesFromMapAndColumnMeta(binder, meta.keys(), key.asMap());
-		return ps.executeUpdate();
+		synchronized (ps) {
+			PreparedStatementBinder binder = helper.create(ps);
+			bindValuesFromMapAndColumnMeta(binder, meta.properties(), record.asMap());
+			bindValuesFromMapAndColumnMeta(binder, meta.keys(), key.asMap());
+			return executerService.executeUpdate(ps);
+		}
 	}
 	
-	/**
-	 * 
-	 * @param key
-	 * @return
-	 * @throws SQLException
-	 */
-	public int delete(RecordKey key)  throws PreparedStatementException, SQLException {
+	public int delete(RecordKey key)  throws StatementExecuteException, SQLException {
 		TableMeta meta = key.getTableMeta();
 		PreparedStatement ps = provider.get(meta, PreparedStatementType.DELETE);
-		PreparedStatementBinder binder = helper.create(ps);
-		bindValuesFromMapAndColumnMeta(binder, meta.keys(), key.asMap());
-		return ps.executeUpdate();
+		synchronized (ps) {
+			PreparedStatementBinder binder = helper.create(ps);
+			bindValuesFromMapAndColumnMeta(binder, meta.keys(), key.asMap());
+			return executerService.executeUpdate(ps);
+		}
 	}
 	
 	public boolean exists(RecordKey key) throws RecordstoreException {
@@ -104,41 +89,40 @@ public class RecordstoreExecutor {
 	}
 	
 	RecordFetcherImpl executeQuery(TableMeta meta, QueryFilterCriteria filter,
-			QuerySorterCriteria sorter, boolean isKeyOnly) throws PreparedStatementException, SQLException{
+			QuerySorterCriteria sorter, boolean isKeyOnly) throws StatementExecuteException, SQLException{
 		
 		PreparedStatementType type = PreparedStatementType.ENTITY;
 		if (isKeyOnly) type = PreparedStatementType.AS_KEY;
 		
-		PreparedStatement ps = provider.get(meta, type,
-				createQueryStatement(filter, sorter));
-		PreparedStatementBinder binder = helper.create(ps);
-		
-		if (filter != null)
-			for (PsValue psValue : filterInterpreter.psValue(filter))
-				binder.set(psValue.getValue(), meta.metaTypeOf(psValue.getProperty()));
-
-		return new RecordFetcherImpl(meta, executeNative(ps), dialect);
+		PreparedStatement ps = provider.get(meta, type, createQueryStatement(filter, sorter));
+		synchronized (ps) {
+			PreparedStatementBinder binder = helper.create(ps);
+			if (filter != null)
+				for (PsValue psValue : filterInterpreter.psValue(filter))
+					binder.set(psValue.getValue(), meta.metaTypeOf(psValue.getProperty()));
+			return new RecordFetcherImpl(meta, executeNative(ps), dialect);
+		}
 	}
 	
-	private ResultSet executeNative(PreparedStatement ps) throws SQLException{
-		return ps.executeQuery();
+	private ResultSet executeNative(PreparedStatement ps) throws SQLException, StatementExecuteException{
+		return executerService.executeQuery(ps);
 	}
 	
 	private String createQueryStatement(QueryFilterCriteria filter,
 			QuerySorterCriteria sorter) {
 		StringBuilder sb = new StringBuilder();
 		if (filter != null)
-			sb.append(" where " + filterInterpreter.statement(filter));
+			sb.append("where " + filterInterpreter.statement(filter)+" ");
 		if (sorter != null)
-			sb.append(" order by " + sorterInterpreter.statement(sorter));
+			sb.append("order by " + sorterInterpreter.statement(sorter));
 		return sb.toString();
 	}
 	
-	public void drop(TableMeta meta) throws SQLException{
+	public void drop(TableMeta meta) throws SQLException, StatementExecuteException{
 		ddlExecutor.drop(meta);
 	}
-
-	public void create(TableMeta meta) throws SQLException{
+	
+	public void create(TableMeta meta) throws SQLException, StatementExecuteException{
 		ddlExecutor.create(meta);
 	}
 }

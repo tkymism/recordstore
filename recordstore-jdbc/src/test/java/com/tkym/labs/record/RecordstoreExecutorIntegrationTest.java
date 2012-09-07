@@ -13,7 +13,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.tkym.labs.record.RecordstoreExecutor;
-import com.tkym.labs.record.PreparedStatementProvider.PreparedStatementException;
 
 public class RecordstoreExecutorIntegrationTest {
 	private static RecordstoreExecutor executor;
@@ -54,7 +53,7 @@ public class RecordstoreExecutorIntegrationTest {
 	}
 	
 	@BeforeClass
-	public static void setupClass() throws SQLException, ClassNotFoundException, PreparedStatementException{
+	public static void setupClass() throws SQLException, ClassNotFoundException, StatementExecuteException{
 		connection = new SqliteFactory().create(SqliteConnectionTest.class.getResource("test.db"));
 		connection.setAutoCommit(false);
 		executor = SqliteFactory.executor(connection);
@@ -69,7 +68,7 @@ public class RecordstoreExecutorIntegrationTest {
 	}
 	
 	@AfterClass
-	public static void teardownClass() throws SQLException, ClassNotFoundException{
+	public static void teardownClass() throws SQLException, ClassNotFoundException, StatementExecuteException{
 		executor.drop(accountMeta);
 		connection.close();
 	}

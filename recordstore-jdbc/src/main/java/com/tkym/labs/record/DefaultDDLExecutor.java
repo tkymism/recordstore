@@ -1,40 +1,37 @@
 package com.tkym.labs.record;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  * @author kazunari
  */
 class DefaultDDLExecutor implements DDLExecutor{
-	protected Connection connection;
+	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDDLExecutor.class);
 	protected final RecordstoreDialect dialect;
-	
-	DefaultDDLExecutor(Connection connection, RecordstoreDialect dialect){
-		this.connection = connection;
+	private final StatementExecuteService executeService;
+	DefaultDDLExecutor(StatementExecuteService service, RecordstoreDialect dialect){
 		this.dialect = dialect;
+		this.executeService = service;
 	}
 	
 	@Override
-	public void create(TableMeta tableMeta) throws SQLException{
+	public void create(TableMeta tableMeta) throws SQLException, StatementExecuteException{
 		execute(dialect.createCreateStatement(tableMeta));
 		for (String stmt : dialect.createCreateIndexStatements(tableMeta))
 			execute(stmt);
 	}
 	
 	@Override
-	public void drop(TableMeta tableMeta)  throws SQLException{
+	public void drop(TableMeta tableMeta)  throws SQLException, StatementExecuteException{
 		execute(dialect.createDropStatement(tableMeta));
 	}
 	
-	private void execute(String sql) throws SQLException {
-		try {
-			Statement statement = connection.createStatement();
-			statement.execute(sql);
-		} catch (SQLException e) {
-			throw e;
-		}
+	private void execute(String sql) throws SQLException, StatementExecuteException {
+		executeService.execute(sql);
+		LOGGER.debug("execute[{}]",sql);
 	}
 }
