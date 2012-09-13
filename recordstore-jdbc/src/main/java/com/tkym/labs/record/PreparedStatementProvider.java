@@ -10,10 +10,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  */
 class PreparedStatementProvider{
-	private Map<TableMeta, Map<String, PreparedStatement>> cache = 
-			new ConcurrentHashMap<TableMeta, Map<String,PreparedStatement>>();
+	private Map<TableMeta, Map<String, UseStatistisCounter<PreparedStatement>>> cache = 
+			new ConcurrentHashMap<TableMeta, Map<String,UseStatistisCounter<PreparedStatement>>>();
 	private PreparedStatementFactory factory;
-	
+	private UseStatisticsManager manager = new UseStatisticsManager();
 	/**
 	 * @param connection
 	 */
@@ -21,32 +21,22 @@ class PreparedStatementProvider{
 		factory = new PreparedStatementFactory(connection);
 	}
 	
-	/**
-	 * @param meta
-	 * @param type
-	 * @param options
-	 * @return
-	 * @throws StatementExecuteException
-	 */
 	PreparedStatement get(TableMeta meta, PreparedStatementType type, String... options)  throws StatementExecuteException{
-		Map<String, PreparedStatement> map = getMap(meta);
+		Map<String, UseStatistisCounter<PreparedStatement>> map = getMap(meta);
 		String optionStr = optionString(options);
 		String key = generateKey(type, optionStr);
-		PreparedStatement ps = map.get(key);
-		if(ps == null){
-			ps = factory.create(meta, type, optionStr);
-			map.put(key, ps);
+		
+		UseStatistisCounter<PreparedStatement> counter = map.get(key);
+		if(counter == null){
+			PreparedStatement ps = factory.create(meta, type, optionStr);
+			counter = manager.manage(ps);
+			map.put(key, counter);
 		}
-		return ps;
+		return counter.use();
 	}
 	
-	/**
-	 * 
-	 * @param meta
-	 * @return
-	 */
-	private Map<String, PreparedStatement> getMap(TableMeta meta){
-		Map<String, PreparedStatement> map = cache.get(meta);
+	private Map<String, UseStatistisCounter<PreparedStatement>> getMap(TableMeta meta){
+		Map<String, UseStatistisCounter<PreparedStatement>> map = cache.get(meta);
 		if(map == null) {
 			map = createMap();
 			cache.put(meta, map);
@@ -81,8 +71,8 @@ class PreparedStatementProvider{
 		return str;
 	}
 	
-	protected Map<String, PreparedStatement> createMap(){
-		return new ConcurrentHashMap<String, PreparedStatement>();
+	protected Map<String, UseStatistisCounter<PreparedStatement>> createMap(){
+		return new ConcurrentHashMap<String, UseStatistisCounter<PreparedStatement>>();
 	}
 	
 	/**

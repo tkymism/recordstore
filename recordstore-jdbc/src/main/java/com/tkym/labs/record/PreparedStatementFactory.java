@@ -63,7 +63,7 @@ class PreparedStatementFactory{
 	private PreparedStatement prepare(String sql) throws StatementExecuteException{
 		try {
 			PreparedStatement preparedStatement = connection.prepareStatement(sql); 
-			LOGGER.debug("prepare [{}]",sql);
+			LOGGER.trace("create PreparedStatement [{}]",sql);
 			return preparedStatement;
 		} catch (SQLException e) {
 			throw new StatementExecuteException(sql, e);

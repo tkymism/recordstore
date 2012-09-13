@@ -6,8 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
- * @author kazunari
+ * @author takayama
  */
 class DefaultDDLExecutor implements DDLExecutor{
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDDLExecutor.class);
@@ -32,6 +31,6 @@ class DefaultDDLExecutor implements DDLExecutor{
 	
 	private void execute(String sql) throws SQLException, StatementExecuteException {
 		executeService.execute(sql);
-		LOGGER.debug("execute[{}]",sql);
+		LOGGER.trace("execute[{}]",sql);
 	}
 }

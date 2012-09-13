@@ -36,6 +36,7 @@ public class MulitThreadTest {
 		service.create(ACCOUNT, true);
 		service.create(PAYMENT, true);
 	}
+	
 	@AfterClass
 	public static void teardownClass() throws RecordstoreException {
 		service.getTransaction().close();

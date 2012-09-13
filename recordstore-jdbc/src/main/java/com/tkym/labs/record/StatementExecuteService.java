@@ -33,8 +33,8 @@ class StatementExecuteService {
 					long start = 0;
 					if (LOGGER.isDebugEnabled()) start = System.nanoTime();
 					int ret = preparedStatement.executeUpdate(); 
-					if (LOGGER.isDebugEnabled()) 
-						LOGGER.debug("executeUpdate:[ret="+ret+"]["+(System.nanoTime()-start)+" nanosec]");
+					if (LOGGER.isTraceEnabled()) 
+						LOGGER.trace("executeUpdate:[ret="+ret+"]["+(System.nanoTime()-start)+" nanosec]");
 					return ret;
 				}
 			}).get();
@@ -52,10 +52,10 @@ class StatementExecuteService {
 				@Override
 				public ResultSet call() throws Exception {
 					long start = 0;
-					if (LOGGER.isDebugEnabled()) start = System.nanoTime();
+					if (LOGGER.isTraceEnabled()) start = System.nanoTime();
 					ResultSet ret = preparedStatement.executeQuery(); 
 					if (LOGGER.isDebugEnabled()) 
-						LOGGER.debug("executeQuery:["+(System.nanoTime()-start)+" nanosec]");
+						LOGGER.trace("executeQuery:["+(System.nanoTime()-start)+" nanosec]");
 					return ret;
 				}
 			}).get();
@@ -73,10 +73,10 @@ class StatementExecuteService {
 				@Override
 				public Void call() throws Exception {
 					long start = 0;
-					if (LOGGER.isDebugEnabled()) start = System.nanoTime();
+					if (LOGGER.isTraceEnabled()) start = System.nanoTime();
 					boolean ret = connection.createStatement().execute(sql);
-					if (LOGGER.isDebugEnabled()) 
-						LOGGER.debug("execute:[ret="+ret+"]["+(System.nanoTime()-start)+" nanosec]");
+					if (LOGGER.isTraceEnabled()) 
+						LOGGER.trace("execute:[ret="+ret+"]["+(System.nanoTime()-start)+" nanosec]");
 					return null;
 				}
 			}).get();
