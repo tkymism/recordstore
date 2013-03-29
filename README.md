@@ -1,7 +1,7 @@
 recordstore
 ===========
 
-recordstore is database framework libraly for Java framework.
+recordstore is database framework libraly for JDBC.
 
 ## Usage
 
