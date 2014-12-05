@@ -1,25 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<artifactId>recordstore-sqlite</artifactId>
 	<packaging>jar</packaging>
-
 	<name>recordstore-sqlite</name>
-	<url>http://maven.apache.org</url>
+	<version>${recordstore.version}</version>
+	<parent>
+		<groupId>com.tkym.labs.recordstore</groupId>
+		<artifactId>recordstore-pom</artifactId>
+		<relativePath>../recordstore-pom</relativePath>
+		<version>0.1</version>
+	</parent>
 	<properties>
 		<sqlite.jdbc.version>3.7.2</sqlite.jdbc.version>
 	</properties>
-	<parent>
-		<groupId>com.tkym.labs</groupId>
-		<artifactId>recordstore-pom</artifactId>
-		<version>1.0</version>
-	</parent>
 	<dependencies>
 		<dependency>
-			<groupId>com.tkym.labs</groupId>
+			<groupId>${project.groupId}</groupId>
+			<version>${project.version}</version>
 			<artifactId>recordstore-jdbc</artifactId>
-			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.xerial</groupId>

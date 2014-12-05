@@ -19,7 +19,7 @@ public class QueryFilter<T> implements QueryFilterCriteria{
 	private final QueryFilterOperator operator; 
 	final T[] values;
 	
-	QueryFilter(String property, QueryFilterOperator operator, T... value){
+	QueryFilter(String property, QueryFilterOperator operator, @SuppressWarnings("unchecked") T... value){
 		this.property = property;
 		this.operator = operator;
 		this.values = value;

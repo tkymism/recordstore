@@ -4,20 +4,21 @@
 	<artifactId>recordstore-h2</artifactId>
 	<packaging>jar</packaging>
 	<name>recordstore-h2</name>
-	<url>http://maven.apache.org</url>
+	<version>${recordstore.version}</version>
 	<parent>
-		<groupId>com.tkym.labs</groupId>
+		<groupId>com.tkym.labs.recordstore</groupId>
 		<artifactId>recordstore-pom</artifactId>
-		<version>1.0</version>
+		<relativePath>../recordstore-pom</relativePath>
+		<version>0.1</version>
 	</parent>
 	<properties>
 		<h2.version>1.3.168</h2.version>
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>com.tkym.labs</groupId>
+			<groupId>${project.groupId}</groupId>
+			<version>${project.version}</version>
 			<artifactId>recordstore-jdbc</artifactId>
-			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>

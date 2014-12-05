@@ -39,7 +39,7 @@ public class QueryFilterBuilder<T> {
 	public QueryBuilder contains(T value){
 		return parent.filter(factory.contains(value));
 	}
-	public QueryBuilder in(T... values){
+	public QueryBuilder in(@SuppressWarnings("unchecked") T... values){
 		return parent.filter(factory.in(values));
 	}
 }

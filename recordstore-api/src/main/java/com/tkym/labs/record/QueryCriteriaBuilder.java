@@ -42,7 +42,7 @@ public class QueryCriteriaBuilder<T> {
 	public QueryFilter<T> contains(T value){
 		return create(QueryFilterOperator.CONTAIN, value);
 	}
-	public QueryFilter<T> in(T... values){
+	public QueryFilter<T> in(@SuppressWarnings("unchecked") T... values){
 		return new QueryFilter<T>(property, QueryFilterOperator.IN, values);
 	}
 	@SuppressWarnings("unchecked")

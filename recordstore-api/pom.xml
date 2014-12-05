@@ -4,10 +4,11 @@
 	<artifactId>recordstore-api</artifactId>
 	<packaging>jar</packaging>
 	<name>recordstore-api</name>
-	<url>http://maven.apache.org</url>
+	<version>${recordstore.version}</version>
 	<parent>
-		<groupId>com.tkym.labs</groupId>
+		<groupId>com.tkym.labs.recordstore</groupId>
 		<artifactId>recordstore-pom</artifactId>
-		<version>1.0</version>
+		<version>0.1</version>
+		<relativePath>../recordstore-pom</relativePath>
 	</parent>
 </project>

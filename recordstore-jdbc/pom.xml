@@ -4,17 +4,18 @@
 	<artifactId>recordstore-jdbc</artifactId>
 	<packaging>jar</packaging>
 	<name>recordstore-jdbc</name>
-	<url>http://maven.apache.org</url>
+	<version>${recordstore.version}</version>
 	<parent>
-		<groupId>com.tkym.labs</groupId>
+		<groupId>com.tkym.labs.recordstore</groupId>
 		<artifactId>recordstore-pom</artifactId>
-		<version>1.0</version>
+		<relativePath>../recordstore-pom</relativePath>
+		<version>0.1</version>
 	</parent>
 	<dependencies>
 		<dependency>
-			<groupId>com.tkym.labs</groupId>
+			<groupId>${project.groupId}</groupId>
+			<version>${project.version}</version>
 			<artifactId>recordstore-api</artifactId>
-			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.xerial</groupId>
